@@ -52,21 +52,24 @@ def test_user_can_get_all_my_urls(user_client):
 # DELETE /short-url-with-auth/url/{short_string} 刪除短網址 (已登入用戶)
 def test_user_can_delete_own_url(user_client):
     # 首先創建一個短網址
-    data = CustomUrlCreateSchema(origin_url="https://www.example.com", short_string="todelete")
+    custom_string = generate_random_string(10)  # 生成 10 個字符的隨機字符串
+    data = CustomUrlCreateSchema(origin_url="https://www.example.com", short_string=custom_string)
     create_response = user_client.post("short-url-with-auth/custom", json={
         "origin_url": str(data.origin_url),
         "short_string": data.short_string
     })
-    url = UrlSchema(**create_response.json())
-    short_string = url.short_string
+    assert create_response.status_code == HTTPStatus.CREATED, f"Failed to create URL: {create_response.json()}"
+
+    url_data = UrlSchema(**create_response.json())
+    short_string = url_data.short_string
 
     # 然後刪除這個短網址
     response = user_client.delete(f"short-url-with-auth/url/{short_string}")
     assert response.status_code == HTTPStatus.NO_CONTENT
 
     # 確認短網址已被刪除
-    get_response = user_client.get(f"short-url/origin/{short_string}")
-    assert get_response.status_code == HTTPStatus.NOT_FOUND
+    response = user_client.delete(f"short-url-with-auth/url/{short_string}")
+    assert response.status_code == HTTPStatus.NOT_FOUND
 
 # POST /short-url-with-auth/custom 創建自定義短網址 (管理員)
 def test_admin_create_custom_short_url(admin_client):

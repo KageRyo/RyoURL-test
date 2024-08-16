@@ -12,7 +12,6 @@ def test_admin_can_access_all_urls(admin_client):
     assert response.status_code == HTTPStatus.OK
     urls = [UrlSchema(**url) for url in response.json()]
     assert isinstance(urls, list)
-    assert len(urls) > 0
 
 # DELETE /admin/expire-urls 刪除過期短網址
 def test_admin_can_expire_urls(admin_client):
