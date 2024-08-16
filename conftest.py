@@ -19,11 +19,13 @@ ADMIN_USER = {
     "password": os.getenv("ADMIN_USER_PASSWORD")
 }
 
+# 載入 Schemas 子模組
 sys.path.append(os.path.join(os.path.dirname(__file__), 'schemas'))
 
 from schemas.schemas import (UrlSchema, UserResponseSchema, UserInfoSchema,
                              ErrorSchema, UrlCreateSchema, CustomUrlCreateSchema)
 
+# API 客戶端類別
 class APIClient:
     def __init__(self, base_url):
         self.base_url = base_url
@@ -56,15 +58,18 @@ class APIClient:
     def put(self, endpoint, **kwargs):
         return self.request("PUT", endpoint, **kwargs)
 
+# 匿名使用者客戶端
 @pytest.fixture
 def api_client():
     return APIClient(BASE_URL)
 
+# 一般使用者客戶端
 @pytest.fixture
 def user_client(api_client):
     api_client.login(TEST_USER["username"], TEST_USER["password"])
     return api_client
 
+# 管理員客戶端
 @pytest.fixture
 def admin_client(api_client):
     api_client.login(ADMIN_USER["username"], ADMIN_USER["password"])
