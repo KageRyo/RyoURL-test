@@ -19,13 +19,16 @@ def test_anonymous_cannot_create_custom_url(api_client):
         "short_string": data.short_string
     })
     assert response.status_code == HTTPStatus.UNAUTHORIZED
-    ErrorSchema(message=response.json()["detail"])
+    error = ErrorSchema(**response.json())
+    assert error.detail == "Unauthorized"
+
 
 # GET /short-url-with-auth/all-my 取得所有自己的短網址 (匿名用戶)
 def test_anonymous_cannot_get_all_my_urls(api_client):
     response = api_client.get("short-url-with-auth/all-my")
     assert response.status_code == HTTPStatus.UNAUTHORIZED
-    ErrorSchema(message=response.json()["detail"])
+    error = ErrorSchema(**response.json())
+    assert error.detail == "Unauthorized"
 
 # POST /short-url-with-auth/custom 創建自定義短網址 (已登入用戶)
 def test_user_can_create_custom_url(user_client):
@@ -87,7 +90,8 @@ def test_admin_create_custom_short_url(admin_client):
 def test_user_delete_others_short_url(user_client):
     response = user_client.delete("short-url-with-auth/url/adminurl")
     assert response.status_code == HTTPStatus.FORBIDDEN
-    ErrorSchema(message=response.json()["detail"])
+    error = ErrorSchema(**response.json())
+    assert error.detail == "無權限刪除此短網址"
     
 # DELETE /short-url-with-auth/url/{short_string} 刪除短網址 (管理員刪除任何人的網址)
 def test_admin_delete_user_short_url(admin_client):

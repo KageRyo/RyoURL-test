@@ -41,19 +41,19 @@ def test_admin_can_update_user_type(admin_client):
 def test_user_cannot_access_all_urls(user_client):
     response = user_client.get("admin/all-urls")
     assert response.status_code == HTTPStatus.FORBIDDEN
-    ErrorSchema(message=response.json()["detail"])
+    ErrorSchema(detail=response.json()["detail"])
 
 def test_user_cannot_expire_urls(user_client):
     response = user_client.delete("admin/expire-urls")
     assert response.status_code == HTTPStatus.FORBIDDEN
-    ErrorSchema(message=response.json()["detail"])
+    ErrorSchema(detail=response.json()["detail"])
 
 def test_user_cannot_get_all_users(user_client):
     response = user_client.get("admin/users")
     assert response.status_code == HTTPStatus.FORBIDDEN
-    ErrorSchema(message=response.json()["detail"])
+    ErrorSchema(detail=response.json()["detail"])
 
 def test_user_cannot_update_user_type(user_client):
     response = user_client.put("admin/user/test_user_0000", params={"user_type": 1})
     assert response.status_code == HTTPStatus.FORBIDDEN
-    ErrorSchema(message=response.json()["detail"])
+    ErrorSchema(detail=response.json()["detail"])
