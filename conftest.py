@@ -1,3 +1,4 @@
+import sys
 import pytest
 import requests
 from urllib.parse import urljoin
@@ -17,6 +18,11 @@ ADMIN_USER = {
     "username": os.getenv("ADMIN_USER_USERNAME"),
     "password": os.getenv("ADMIN_USER_PASSWORD")
 }
+
+sys.path.append(os.path.join(os.path.dirname(__file__), 'schemas'))
+
+from schemas.schemas import (UrlSchema, UserResponseSchema, UserInfoSchema,
+                             ErrorSchema, UrlCreateSchema, CustomUrlCreateSchema)
 
 class APIClient:
     def __init__(self, base_url):

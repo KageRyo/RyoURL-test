@@ -16,6 +16,7 @@ django-redis
 djangorestframework-simplejwt
 
 # 工具
+pydantic
 python-dotenv
 
 # 圖片處理
