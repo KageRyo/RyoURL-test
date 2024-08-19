@@ -1,6 +1,7 @@
 # 測試框架
 pytest
 pytest-django
+locust
 
 # 覆蓋率報告
 pytest-cov
