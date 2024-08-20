@@ -38,22 +38,22 @@ def test_admin_can_update_user_type(admin_actions):
 一般使用者使用管理員 API 測試
 """    
 # 一般使用者不應該可以使用任何管理員 API
-def test_user_cannot_access_all_urls(user_client):
-    response = user_client.get("admin/all-urls")
+def test_user_cannot_access_all_urls(user_actions):
+    response = user_actions.get_all_urls()
     assert response.status_code == HTTPStatus.FORBIDDEN
     ErrorSchema(detail=response.json()["detail"])
 
-def test_user_cannot_expire_urls(user_client):
-    response = user_client.delete("admin/expire-urls")
+def test_user_cannot_expire_urls(user_actions):
+    response = user_actions.delete_expired_urls()
     assert response.status_code == HTTPStatus.FORBIDDEN
     ErrorSchema(detail=response.json()["detail"])
 
-def test_user_cannot_get_all_users(user_client):
-    response = user_client.get("admin/users")
+def test_user_cannot_get_all_users(user_actions):
+    response = user_actions.get_all_users()
     assert response.status_code == HTTPStatus.FORBIDDEN
     ErrorSchema(detail=response.json()["detail"])
 
-def test_user_cannot_update_user_type(user_client):
-    response = user_client.put("admin/user/test_user_0000", params={"user_type": 1})
+def test_user_cannot_update_user_type(user_actions):
+    response = user_actions.update_user_type("test_user_0000", 1)
     assert response.status_code == HTTPStatus.FORBIDDEN
     ErrorSchema(detail=response.json()["detail"])
