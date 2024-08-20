@@ -1,9 +1,13 @@
+import os
 import sys
 import pytest
 import requests
 from urllib.parse import urljoin
 from dotenv import load_dotenv
-import os
+
+from actions.admin_actions import AdminActions
+from actions.user_actions import UserActions
+from actions.anonymous_actions import AnonymousActions
 
 # 載入 .env 文件
 load_dotenv()
@@ -74,3 +78,18 @@ def user_client(api_client):
 def admin_client(api_client):
     api_client.login(ADMIN_USER["username"], ADMIN_USER["password"])
     return api_client
+
+# 管理員的 API 操作行為
+@pytest.fixture
+def admin_actions(admin_client):
+    return AdminActions(admin_client)
+
+# 一般使用者的 API 操作行為
+@pytest.fixture
+def user_actions(user_client):
+    return UserActions(user_client)
+
+# 匿名使用者的 API 操作行為
+@pytest.fixture
+def anonymous_actions(api_client):
+    return AnonymousActions(api_client)
