@@ -4,6 +4,15 @@ class AnonymousActions:
 
     def create_short_url(self, origin_url):
         return self.client.post("short-url/short", json={"origin_url": origin_url})
+    
+    def create_custom_url(self, origin_url, short_string):
+        return self.client.post("short-url-with-auth/custom", json={
+            "origin_url": str(origin_url),
+            "short_string": short_string
+        })
+        
+    def get_all_my_urls(self):
+        return self.client.get("short-url-with-auth/all-my")
 
     def get_original_url(self, short_string):
         return self.client.get(f"short-url/origin/{short_string}")

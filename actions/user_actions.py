@@ -4,7 +4,7 @@ class UserActions:
 
     def create_custom_url(self, origin_url, short_string):
         return self.client.post("short-url-with-auth/custom", json={
-            "origin_url": origin_url,
+            "origin_url": str(origin_url),
             "short_string": short_string
         })
 
