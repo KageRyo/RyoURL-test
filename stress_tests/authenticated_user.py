@@ -2,6 +2,7 @@ import random
 import string
 from locust import HttpUser, task, between
 from locustfile import BASE_URL
+from actions.user_actions import UserActions
 
 def generate_random_string(length=6):
     return ''.join(random.choices(string.ascii_letters + string.digits, k=length))
@@ -14,9 +15,10 @@ class AuthenticatedUser(HttpUser):
     # 開始時，先進行登入
     def on_start(self):
         self.login()
+        self.user_actions = UserActions(self.client)
     
     def login(self):
-        response = self.client.post("/auth/login", json={
+        response = self.client.post("auth/login", json={
             "username": "test_user_0000",
             "password": "test_user_pwd0"
         })
@@ -34,17 +36,17 @@ class AuthenticatedUser(HttpUser):
             "origin_url": f"https://www.example.com/{random.randint(1, 1000)}",
             "short_string": custom_string
         }
-        create_response = self.client.post("/short-url-with-auth/custom", json=data)
+        create_response = self.user_actions.create_custom_url(data['origin_url'], custom_string)
         
         if create_response.status_code == 201:
             # 查詢所有短網址
-            get_response = self.client.get("/short-url-with-auth/all-my")
+            get_response = self.client.get("short-url-with-auth/all-my")
             
             if get_response.status_code == 200:
                 # 刪除剛剛建立的短網址
-                self.client.delete(f"/short-url-with-auth/url/{custom_string}")
+                self.user_actions.delete_url(custom_string)
     
     # 取得使用者資訊
     @task(1)
     def get_user_info(self):
-        self.client.get("/user/info?username=test_user_0000")
+        self.user_actions.get_user_info("test_user_0000")
